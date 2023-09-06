@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <style>
+        .banner_wrapper {
+            max-width: 1000px;
+            font-family: inherit;
+            position: relative;
+            margin: 50px auto;
+        }
+
+        .banner_wrapper .banner#base.focusout {
+            opacity: 0;
+        }
+
+        .banner_wrapper .banner:not(#base) {
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            transition: opacity 150ms 0s ease-in;
+            opacity: 0;
+        }
+
+        .banner_wrapper .banner.show {
+            z-index: 1 !important;
+            opacity: 1 !important;
+        }
+
+        .banner_wrapper .info.show {
+            z-index: 2 !important;
+            opacity: 1 !important;
+        }
+
+        .banner_wrapper .banner img {
+            width: 100%;
+        }
+
+        .banner_wrapper button {
+            position: absolute;
+            z-index: 2;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            height: 40px;
+            width: 40px;
+            font-size: 150%;
+            cursor: pointer;
+            -webkit-box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.1);
+            opacity: 0.2;
+        }
+
+        .banner_wrapper button.active {
+            opacity: 1;
+        }
+
+        .banner_wrapper .info {
+            position: absolute;
+            width: 30%;
+            font-family: 'Roboto', sans-serif;
+            color: white !important;
+        }
+
+        .link_wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+            padding: 20px 10px;
+        }
+
+        .link_wrapper a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2em;
+            opacity: 0.2;
+            margin: 10px 0;
+            font-family: Roboto, sans-serif;
+        }
+
+        .link_wrapper a.active {
+            opacity: 1;
+        }
+    </style>
+    <div class="link_wrapper">
+        <a href="/monopoint" value="base" class="active">Monopoint<sup>&reg;</sup> Platform</a>
+    </div>
+    <div class="link_wrapper">
+        <a value="1">Tenzing<sup>&reg;</sup> 7</a>
+        <a value="2">HiPoint&trade; 70<sup></sup></a>
+        <a value="3">HiPoint&trade; 88<sup></sup></a>
+        <a value="4">Base Camp<sup>&reg;</sup></a>
+    </div>
+    <div class="banner_wrapper">
+        <div class="banner base" id="base">
+            <img src="https://www.weebly.com/editor/uploads/7/5/9/1/75914023/custom_themes/148983669939545589/files/base_8.png"
+                 alt="base">
+        </div>
+        <div class="banner 1" id="1">
+            <img src="https://www.weebly.com/editor/uploads/7/5/9/1/75914023/custom_themes/148983669939545589/files/Tenzing_6.png"
+                 alt="Tenzing">
+        </div>
+        <div class="banner 2" id="2">
+            <img src="https://www.weebly.com/editor/uploads/7/5/9/1/75914023/custom_themes/148983669939545589/files/070_6.png"
+                 alt="HiPoint 070">
+        </div>
+        <div class="banner 3" id="3">
+            <img src="https://www.weebly.com/editor/uploads/7/5/9/1/75914023/custom_themes/148983669939545589/files/088_6.png"
+                 alt="HiPoint 088">
+        </div>
+        <div class="banner 4" id="4">
+            <img src="https://www.weebly.com/editor/uploads/7/5/9/1/75914023/custom_themes/148983669939545589/files/basecamp_6.png"
+                 alt="Basecamp">
+        </div>
+        <button value="1" style="bottom: 14%;left: 8%;">+</button>
+        <button value="2" style="bottom: 11%;left: 58%;">+</button>
+        <button value="3" style="bottom: 8%;left: 35%;">+</button>
+        <button value="4" style="bottom: 42%;left: 14%;">+</button>
+    </div>
+    <script>
+        let interval;
+
+        function startInterval() {
+            const len = $(`.banner_wrapper .banner:not(#base)`).length;
+            let i = 1;
+            // keep base image longer
+            interval = setInterval(() => {
+                $(`.banner_wrapper .banner`).removeClass('show');
+                $(`.banner_wrapper .info`).removeClass('show');
+                $('.banner_wrapper .banner#base').removeClass('focusout');
+                $('.link_wrapper a').removeClass('active');
+                $('.banner_wrapper button').removeClass('active');
+                if (i <= len) {
+                    $('.banner_wrapper .banner#base').addClass('focusout');
+                    $(`.banner_wrapper .banner`).removeClass('show');
+                    $(`.banner_wrapper .info`).removeClass('show');
+                    $(`.banner_wrapper .${i}`).addClass('show');
+                    $(`.link_wrapper a[value="${i}"]`).addClass('active');
+                    $(`.banner_wrapper button[value="${i}"]`).addClass('active');
+
+                    i++;
+                } else {
+                    $('.link_wrapper a[value="base"]').addClass('active');
+                    $('.banner_wrapper .banner#base').removeClass('focusout');
+                    i = 1;
+                }
+            }, 5000);
+        }
+
+        function enterButton(e) {
+            clearInterval(interval);
+            $('.banner_wrapper button').removeClass('active')
+            $('.link_wrapper a[value="base"]').removeClass('active');
+            $('.banner_wrapper .banner#base').addClass('focusout');
+            $(`.banner_wrapper .banner`).removeClass('show');
+            $('.link_wrapper a').removeClass('active');
+            $(`.banner_wrapper .info`).removeClass('show');
+            const value = $(e.currentTarget).attr('value');
+            $(`.banner_wrapper .${value}`).addClass('show');
+            $(`.link_wrapper a[value="${value}"]`).addClass('active');
+            $(e.currentTarget).addClass('active');
+        }
+
+        function exitButton(e) {
+            $(`.banner_wrapper .banner`).removeClass('show');
+            $(`.banner_wrapper .info`).removeClass('show');
+            $('.banner_wrapper .banner#base').removeClass('focusout');
+            $('.link_wrapper a').removeClass('active');
+            $(e.currentTarget).removeClass('active');
+            $('.link_wrapper a[value="base"]').addClass('active');
+            startInterval();
+        }
+
+        $('.banner_wrapper button').hover((e) => enterButton(e), (e) => exitButton(e));
+        $('.link_wrapper a').hover((e) => enterButton(e), (e) => exitButton(e));
+
+        $(window).ready(() => {
+            startInterval();
+        });
+    </script>
+</body>
+</html>

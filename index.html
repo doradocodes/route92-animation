@@ -16,6 +16,8 @@
   <link rel="apple-touch-icon" href="icon.png">
   <!-- Place favicon.ico in the root directory -->
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 
 <body>
@@ -44,51 +46,49 @@ canvas {
 <canvas id="r92-animation-container"/>
 
 <script>
-  const html = document.documentElement;
   const canvas = document.getElementById("r92-animation-container");
   const context = canvas.getContext("2d");
 
-  const frameCount = 260;
-  const currentFrame = index => (
-          `img/animation-compressed/Web_FC${index.toString().padStart(3, '0')}-min.png`
-  )
+  canvas.width = 1920;
+  canvas.height = 1080;
 
-  const preloadImages = () => {
-    for (let i = 1; i < frameCount; i++) {
-      const img = new Image();
-      img.src = currentFrame(i);
+  const frameCount = 570;
+  const currentFrame = index => {
+    if (index < 261) {
+      return `https://www.route92medical.com/wp-content/uploads/2023/08/Web_FC${index.toString().padStart(3, '0')}-min.png`
     }
+    return `https://www.route92medical.com/wp-content/uploads/2023/08/Web_FC${index.toString().padStart(3, '0')}.png`
+  }
+
+  const images = []
+  const airpods = {
+    frame: 0
   };
 
-  const img = new Image()
-  img.src = currentFrame(1);
-  canvas.width=1920;
-  canvas.height=1080;
-  img.onload=function(){
-    context.drawImage(img, 0, 0);
+  for (let i = 0; i < frameCount; i++) {
+    const img = new Image();
+    img.src = currentFrame(i);
+    images.push(img);
   }
 
-  const updateImage = index => {
-    img.src = currentFrame(index);
-    context.drawImage(img, 0, 0);
-  }
-
-  window.addEventListener('scroll', () => {
-    const scrollTop = html.scrollTop;
-    const maxScrollTop = html.scrollHeight - window.innerHeight;
-    const scrollFraction = scrollTop / maxScrollTop;
-    const frameIndex = Math.min(
-            frameCount - 1,
-            Math.ceil(scrollFraction * frameCount)
-    );
-
-    requestAnimationFrame(() => updateImage(frameIndex + 1))
+  gsap.to(airpods, {
+    frame: frameCount - 1,
+    snap: "frame",
+    ease: "none",
+    scrollTrigger: {
+      scrub: 0.5
+    },
+    onUpdate: render // use animation onUpdate instead of scrollTrigger's onUpdate
   });
 
-  preloadImages()
+  images[0].onload = render;
+
+  function render() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(images[airpods.frame], 0, 0);
+  }
 
 </script>
-
 </body>
 
 </html>

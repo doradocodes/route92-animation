@@ -2,9 +2,10 @@ const html = document.documentElement;
 const canvas = document.getElementById("r92-animation-container");
 const context = canvas.getContext("2d");
 
-const frameCount = 570;
+const frameCount = 101;
 const currentFrame = index => (
-  `img/animation/Web_FC${index.toString().padStart(3, '0')}.png`
+  // `img/animation/Web_FC${index.toString().padStart(3, '0')}.png`
+    `https://www.route92medical.com/wp-content/uploads/2023/08/Web_FC${index.toString().padStart(3, '0')}-min.png`
 )
 
 const preloadImages = () => {
